@@ -18,21 +18,16 @@ class _CourierPageState extends State<CourierPage> {
         // print(json.encode(snapshot.data));
         if (snapshot.hasData) {
           return listData(snapshot.data);
-          // return new Text(
-          //   snapshot.data.toString(),
-          //   textAlign: TextAlign.center,
-          //   overflow: TextOverflow.ellipsis,
-          //   style: new TextStyle(fontWeight: FontWeight.bold),
-          // );
         } else if (snapshot.hasError) {
           return new Center(child: Text("${snapshot.error}"));
         }
 
-        return new CircularProgressIndicator();
+        return new Center(child: CircularProgressIndicator());
       },
     );
   }
-    Widget listData(List<Courier> listData) {
+
+  Widget listData(List<Courier> listData) {
     return ListView.builder(
         itemCount: listData.length,
         itemBuilder: (BuildContext context, int index) => Card(
@@ -40,7 +35,8 @@ class _CourierPageState extends State<CourierPage> {
               child: ListTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => DetailCourierPage('detail',listData[index])));
+                      builder: (context) =>
+                          DetailCourierPage('detail', listData[index])));
                 },
                 title: Text(listData[index].name),
                 subtitle: Text(listData[index].username),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:adminpet/data.dart' as data1;
 import 'package:adminpet/model/courier_model.dart';
 import 'package:adminpet/controller/courier_controller.dart';
+import 'package:adminpet/screen/widget/maps_widget.dart';
 
 class DetailCourierPage extends StatefulWidget {
   String level = "detail";
@@ -21,8 +22,6 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
 
   void initState() {
     super.initState();
-    print(widget.level);
-    print(widget._courier.name);
     if (widget.level != 'add') {
       setState(() {
         courier = widget._courier;
@@ -31,123 +30,136 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
       });
     } else {
       setState(() {
-        courier.idPetshop = "5c10af71535a234d990b109f";
+        // courier.idPetshop = "5c10af71535a234d990b109f";
         courier.enabled = aa;
       });
     }
   }
 
-  Widget content() => new Center(
-        child: Container(
-          padding: EdgeInsets.all(10.0),
-          height: 300.0,
-          width: double.infinity,
-          child: Card(
-            elevation: 2.0,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 30.0),
-                  child: TextField(
-                    controller: nameEditingController,
-                    onChanged: (text) {
-                      setState(() {
-                        courier.name = text;
-                      });
-                    },
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                      hintText: "Enter your courier name",
-                      labelText: "Courier Name",
-                    ),
+  Widget formContent() => Container(
+        padding: EdgeInsets.all(10.0),
+        height: 300.0,
+        width: double.infinity,
+        child: Card(
+          elevation: 2.0,
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 30.0),
+                child: TextField(
+                  controller: nameEditingController,
+                  onChanged: (text) {
+                    setState(() {
+                      courier.name = text;
+                    });
+                  },
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    hintText: "Enter your courier name",
+                    labelText: "Courier Name",
                   ),
                 ),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 30.0),
-                  child: TextField(
-                    controller: usernameEditingController,
-                    onChanged: (text) {
-                      setState(() {
-                        courier.username = text;
-                      });
-                    },
-                    maxLines: 1,
-                    decoration: InputDecoration(
-                      hintText: "Enter your courier username",
-                      labelText: "UserName",
-                    ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 30.0),
+                child: TextField(
+                  controller: usernameEditingController,
+                  onChanged: (text) {
+                    setState(() {
+                      courier.username = text;
+                    });
+                  },
+                  maxLines: 1,
+                  decoration: InputDecoration(
+                    hintText: "Enter your courier username",
+                    labelText: "UserName",
                   ),
                 ),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 0.0, horizontal: 30.0),
-                  child: TextField(
-                    onChanged: (text) {
-                      setState(() {
-                        courier.password = text;
-                      });
-                    },
-                    maxLines: 1,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: "Enter your courier password",
-                      labelText: "Password",
-                    ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 30.0),
+                child: TextField(
+                  onChanged: (text) {
+                    setState(() {
+                      courier.password = text;
+                    });
+                  },
+                  maxLines: 1,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: "Enter your courier password",
+                    labelText: "Password",
                   ),
                 ),
-                // Container(
-                //   padding: EdgeInsets.all(30.0),
-                //   width: double.infinity,
-                //   child: Column(
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: <Widget>[
-                //       Text(
-                //         "Enabled",
-                //         style: TextStyle(
-                //           fontSize: 16.0,
-                //           fontWeight: FontWeight.w700,
-                //         ),
-                //       ),
-                //       SizedBox(
-                //         height: 5.0,
-                //       ),
-                //       Wrap(
-                //         alignment: WrapAlignment.spaceBetween,
-                //         children: data1.listEnabled
-                //             .map((pc) => Padding(
-                //                   padding: const EdgeInsets.all(8.0),
-                //                   child: ChoiceChip(
-                //                     selectedColor: Colors.yellow,
-                //                     label: Text(
-                //                       pc,
-                //                       style: TextStyle(
-                //                         fontWeight: FontWeight.bold,
-                //                       ),
-                //                     ),
-                //                     selected:
-                //                         aa == (pc.toLowerCase() == 'true'),
-                //                     onSelected: (selected) {
-                //                       setState(() {
-                //                         aa = selected
-                //                             ? (pc.toLowerCase() == 'true')
-                //                             : false;
-                //                         courier.enabled = aa;
-                //                       });
-                //                     },
-                //                   ),
-                //                 ))
-                //             .toList(),
-                //       ),
-                //     ],
-                //   ),
-                // )
-              ],
-            ),
+              ),
+              // Container(
+              //   padding: EdgeInsets.all(30.0),
+              //   width: double.infinity,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: <Widget>[
+              //       Text(
+              //         "Enabled",
+              //         style: TextStyle(
+              //           fontSize: 16.0,
+              //           fontWeight: FontWeight.w700,
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         height: 5.0,
+              //       ),
+              //       Wrap(
+              //         alignment: WrapAlignment.spaceBetween,
+              //         children: data1.listEnabled
+              //             .map((pc) => Padding(
+              //                   padding: const EdgeInsets.all(8.0),
+              //                   child: ChoiceChip(
+              //                     selectedColor: Colors.yellow,
+              //                     label: Text(
+              //                       pc,
+              //                       style: TextStyle(
+              //                         fontWeight: FontWeight.bold,
+              //                       ),
+              //                     ),
+              //                     selected:
+              //                         aa == (pc.toLowerCase() == 'true'),
+              //                     onSelected: (selected) {
+              //                       setState(() {
+              //                         aa = selected
+              //                             ? (pc.toLowerCase() == 'true')
+              //                             : false;
+              //                         courier.enabled = aa;
+              //                       });
+              //                     },
+              //                   ),
+              //                 ))
+              //             .toList(),
+              //       ),
+              //     ],
+              //   ),
+              // )
+            ],
           ),
         ),
       );
+
+  Widget mapswidget() => Container(
+        padding: EdgeInsets.all(10.0),
+        height: 300.0,
+        width: double.infinity,
+        child: Card(
+          elevation: 2.0, 
+          child: MapsWidget( lat: -6.934837, lon: 107.620810, listMarker: null,),
+        ),
+      );
+
+  Widget content() => new Center(
+          child: Column(
+        children: <Widget>[
+          widget.level != 'add' ? mapswidget() : Container(),
+          formContent(),
+        ],
+      ));
   Widget saveButton() => new Container(
         margin: EdgeInsets.all(10.0),
         child: Align(

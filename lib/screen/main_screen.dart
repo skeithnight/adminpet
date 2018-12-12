@@ -9,6 +9,7 @@ import 'package:adminpet/screen/courier/courier_page.dart';
 import 'package:adminpet/screen/product/product_page.dart';
 import 'profile/profile_page.dart';
 import 'widget/appbar_widget.dart';
+import 'package:adminpet/model/petshop_model.dart';
 
 class MainScreen extends StatefulWidget {
   static String tag = 'main-page';
@@ -22,22 +23,9 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    checkSession();
+    LoginController(context).checkToken();
   }
 
-  void checkSession() async {
-    prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('token') == null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: ((context) => LoginPage())));
-    } else {
-      setState(() {
-        token = prefs.getString('token') ?? '';
-      });
-    }
-  }
-
-  
   Widget bottomNavigator() => TabBar(
         labelColor: Colors.black,
         tabs: <Widget>[
@@ -63,26 +51,36 @@ class _MainScreenState extends State<MainScreen> {
         ],
       );
 
+  Widget content() => new FutureBuilder<Petshop>(
+        future: LoginController(context).checkSession(),
+        builder: ((context, snapshot) {
+          print(snapshot.data);
+          if (snapshot.hasData) {
+            return DefaultTabController(
+              length: 3,
+              child: SafeArea(
+                child: Scaffold(
+                  body: TabBarView(
+                    children: <Widget>[
+                      new ProductPage(),
+                      new CourierPage(),
+                      new ProfilePage(),
+                    ],
+                  ),
+                  bottomNavigationBar: bottomNavigator(),
+                ),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            // throw(snapshot.error);
+            return new Center(child: Container( height: 500.0, child: Text("${snapshot.error}"),));
+          }
+
+          return new Center(child: CircularProgressIndicator());
+        }),
+      );
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return new MaterialApp(
-      color: Colors.yellow,
-      home: DefaultTabController(
-        length: 3,
-        child: SafeArea(
-          child: Scaffold(
-            body: TabBarView(
-              children: <Widget>[
-                new ProductPage(),
-                new CourierPage(),
-                new ProfilePage(),
-              ],
-            ),
-            bottomNavigationBar: bottomNavigator(),
-          ),
-        ),
-      ),
-    );
+    return new MaterialApp(color: Colors.yellow, home: Scaffold(body:content()));
   }
 }

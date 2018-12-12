@@ -31,6 +31,8 @@ class CourierController {
   }
 
   void insertData(Courier courier, String token) async {
+    prefs = await SharedPreferences.getInstance();
+    courier.idPetshop = prefs.getString("idPetshop");
     dio.options.headers = {"Authorization": "Bearer " + token};
     dio.options.data = courier.toJsonInsert();
     dio.options.baseUrl = data1.urlCourier;
@@ -63,8 +65,9 @@ class CourierController {
     dio.options.headers = {
       "Authorization": "Bearer " + prefs.getString('token') ?? ''
     };
+    dio.options.baseUrl = data1.urlCourier;
 
-    var response = await dio.get(data1.urlCourier);
+    var response = await dio.get('/5c10af71535a234d990b109f');
     List<dynamic> map = response.data;
     List<Courier> listCourier = new List();
     for (var i = 0; i < map.length; i++) {

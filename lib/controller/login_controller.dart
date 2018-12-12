@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:adminpet/data.dart' as data;
+import 'package:adminpet/data.dart' as data1;
 import 'package:adminpet/model/petshop_model.dart';
 import 'package:adminpet/screen/widget/dialog_widget.dart';
 import 'package:adminpet/screen/main_screen.dart';
@@ -15,21 +15,22 @@ class LoginController {
   Dio dio = new Dio();
   void sendData(Petshop petshop) async {
     if (checkData(petshop)) {
-      // print(data.urlRegister);
-      // print(petshop.toJsonLogin());
-      var response = await dio.post(data.urlLogin, data: petshop.toJsonLogin());
+      var response =
+          await dio.post(data1.urlLogin, data: petshop.toJsonLogin());
       if (response.statusCode == 200) {
         // If server returns an OK response, parse the JSON
         SharedPreferences _prefs = await SharedPreferences.getInstance();
         _prefs.setString('token', response.data['token']);
         _prefs.commit();
-        DialogWidget( context: context,dismiss: true).tampilDialog("Success", "Success login..",MainScreen());
+        DialogWidget(context: context, dismiss: true)
+            .tampilDialog("Success", "Success login..", MainScreen());
       } else {
         // If that response was not OK, throw an error.
         throw Exception('Failed to load post');
       }
     } else {
-      DialogWidget(context: context).tampilDialog("Failed", "The Data cannot empty!",(){});
+      DialogWidget(context: context)
+          .tampilDialog("Failed", "The Data cannot empty!", () {});
     }
   }
 
@@ -49,5 +50,27 @@ class LoginController {
     } catch (e) {
       throw (e);
     }
+  }
+
+  Future<String> checkToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('token') == null || prefs.getString('idPetshop') == null) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: ((context) => LoginPage())));
+    }
+    return prefs.getString('token');
+  }
+
+  Future<Petshop> checkSession() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    dio.options.headers = {
+      "Authorization": "Bearer " + prefs.getString('token') ?? ''
+    };
+
+    var response = await dio.get(data1.urlCheckSession);
+    Petshop petshop = Petshop.fromSnapshot(response.data);
+    prefs.setString("idPetshop", petshop.id);
+    prefs.commit();
+    return petshop;
   }
 }
