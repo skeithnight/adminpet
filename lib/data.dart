@@ -1,0 +1,1 @@
+var urlRegister = "http://35.231.59.91:8080/petshop/register";
