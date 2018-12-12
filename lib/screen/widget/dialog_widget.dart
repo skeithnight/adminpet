@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
 class DialogWidget {
   BuildContext context;
-  DialogWidget(this.context);
-  void tampilDialog(String tittle, String message){
+  bool dismiss = false;
+  DialogWidget({this.context, this.dismiss});
+  void tampilDialog(String tittle, String message, dynamic route) {
     showDialog(
-      barrierDismissible: true,
+      barrierDismissible: dismiss,
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
@@ -19,7 +21,8 @@ class DialogWidget {
                 if (tittle == "Failed") {
                   Navigator.of(context).pop();
                 } else if (tittle == "Success") {
-                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: ((context) => route)));
                 }
               },
             ),

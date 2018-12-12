@@ -113,8 +113,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
-                  hintText: "Enter your phone number",
-                  labelText: "Phone Number",
+                  hintText: "Enter your address",
+                  labelText: "Address",
                 ),
               ),
             ),
@@ -165,6 +165,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 color: Colors.green,
                 onPressed: () {
+                  // print(petshop.toJsonRegister());
                   RegisterController(context).sendData(petshop);
                 },
               ),

@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:adminpet/utils/uidata.dart';
 
 import 'package:adminpet/main.dart';
+import 'package:adminpet/model/petshop_model.dart';
 import 'sign_up_page.dart';
+import 'package:adminpet/controller/login_controller.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  Petshop petshop = new Petshop();
+  Size deviceSize;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +63,11 @@ class LoginPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 30.0),
               child: TextField(
                 maxLines: 1,
+                onChanged: (text) {
+                  setState(() {
+                    this.petshop.username = text;
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: "Enter your username",
                   labelText: "Username",
@@ -65,6 +78,11 @@ class LoginPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 30.0),
               child: TextField(
                 maxLines: 1,
+                onChanged: (text) {
+                  setState(() {
+                    this.petshop.password = text;
+                  });
+                },
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: "Enter your password",
@@ -87,6 +105,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 color: Colors.green,
                 onPressed: () {
+                  LoginController(context).sendData(petshop);
                   // Navigator.pushReplacement(context,
                   //     MaterialPageRoute(builder: ((context) => MyApp())));
                 },

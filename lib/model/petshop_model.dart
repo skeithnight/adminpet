@@ -10,8 +10,8 @@ class Petshop {
 
   Petshop();
 
-  Petshop.fromSnapshot( Map<dynamic,dynamic> snapshot,String id)
-      : this.id = id,
+  Petshop.fromSnapshot(Map<dynamic, dynamic> snapshot)
+      : id = snapshot["id"],
         username = snapshot["username"],
         name = snapshot["name"],
         address = snapshot["address"],
@@ -21,10 +21,15 @@ class Petshop {
 
   Map<String, dynamic> toJsonRegister() => {
         "username": username,
+        "password": password,
         "name": name,
         "address": address,
         "latitude": latitude,
         "longitude": longitude,
         "enabled": true,
+      };
+  Map<String, dynamic> toJsonLogin() => {
+        "username": username,
+        "password": password,
       };
 }
