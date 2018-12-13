@@ -13,6 +13,9 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   Petshop petshop = new Petshop();
   Size deviceSize;
+
+  bool isloading = false;
+
   @override
   Widget build(BuildContext context) {
     deviceSize = MediaQuery.of(context).size;
@@ -156,19 +159,25 @@ class _SignUpPageState extends State<SignUpPage> {
             Container(
               padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 30.0),
               width: double.infinity,
-              child: RaisedButton(
-                padding: EdgeInsets.all(12.0),
-                shape: StadiumBorder(),
-                child: Text(
-                  "SIGN UP",
-                  style: TextStyle(color: Colors.white),
-                ),
-                color: Colors.green,
-                onPressed: () {
-                  // print(petshop.toJsonRegister());
-                  RegisterController(context).sendData(petshop);
-                },
-              ),
+              child: isloading == false
+                  ? RaisedButton(
+                      padding: EdgeInsets.all(12.0),
+                      shape: StadiumBorder(),
+                      child: Text(
+                        "SIGN UP",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      color: Colors.green,
+                      onPressed: () {
+                        setState(() {
+                          this.isloading = true;
+                        });
+                        RegisterController(context).sendData(petshop);
+                      },
+                    )
+                  : Center(
+                      child: CircularProgressIndicator(),
+                    ),
             ),
             SizedBox(
               height: 5.0,

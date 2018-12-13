@@ -16,6 +16,7 @@ class DetailCourierPage extends StatefulWidget {
 class _DetailCourierPageState extends State<DetailCourierPage> {
   Courier courier = new Courier();
   bool aa = true;
+  bool isloading = false;
 
   var nameEditingController = new TextEditingController();
   var usernameEditingController = new TextEditingController();
@@ -148,8 +149,12 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
         height: 300.0,
         width: double.infinity,
         child: Card(
-          elevation: 2.0, 
-          child: MapsWidget( lat: -6.934837, lon: 107.620810, listMarker: null,),
+          elevation: 2.0,
+          child: MapsWidget(
+            lat: -6.934837,
+            lon: 107.620810,
+            listMarker: null,
+          ),
         ),
       );
 
@@ -167,16 +172,20 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
           child: SizedBox(
             width: double.infinity,
             height: 50.0,
-            child: new RaisedButton(
-              color: Colors.lightGreen,
-              child: Text(
-                "Save",
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {
-                CourierController(context).sendData(courier);
-              },
-            ),
+            child: isloading == false
+                ? new RaisedButton(
+                    color: Colors.lightGreen,
+                    child: Text(
+                      "Save",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      CourierController(context).sendData(courier);
+                    },
+                  )
+                : Center(
+                    child: CircularProgressIndicator(),
+                  ),
           ),
         ),
       );

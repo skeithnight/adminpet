@@ -33,6 +33,7 @@ class CourierController {
   void insertData(Courier courier, String token) async {
     prefs = await SharedPreferences.getInstance();
     courier.idPetshop = prefs.getString("idPetshop");
+    // print(json.encode(courier.idPetshop));
     dio.options.headers = {"Authorization": "Bearer " + token};
     dio.options.data = courier.toJsonInsert();
     dio.options.baseUrl = data1.urlCourier;
@@ -45,15 +46,15 @@ class CourierController {
           .tampilDialog("Success", "Success login..", MainScreen());
     } else {
       // If that response was not OK, throw an error.
-      throw Exception('Failed to load post');
+      DialogWidget(context: context, dismiss: true)
+          .tampilDialog("Failed", "Error on saving data", () {});
     }
   }
 
   bool checkData(Courier courier) {
     if (courier.username == null ||
         courier.password == null ||
-        courier.name == null ||
-        courier.idPetshop == null) {
+        courier.name == null) {
       return false;
     }
     return true;
@@ -67,7 +68,7 @@ class CourierController {
     };
     dio.options.baseUrl = data1.urlCourier;
 
-    var response = await dio.get('/5c10af71535a234d990b109f');
+    var response = await dio.get(data1.pathCourierPetshop+'/5c10af71535a234d990b109f');
     List<dynamic> map = response.data;
     List<Courier> listCourier = new List();
     for (var i = 0; i < map.length; i++) {
