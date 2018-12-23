@@ -73,7 +73,11 @@ class _MainScreenState extends State<MainScreen> {
             );
           } else if (snapshot.hasError) {
             // throw(snapshot.error);
-            return new Center(child: Container( height: 500.0, child: Text("${snapshot.error}"),));
+            return new Center(
+                child: Container(
+              height: 500.0,
+              child: Text("${snapshot.error}"),
+            ));
           }
 
           return new Center(child: CircularProgressIndicator());
@@ -81,6 +85,11 @@ class _MainScreenState extends State<MainScreen> {
       );
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(color: Colors.yellow, home: Scaffold(body:content()));
+    return new MaterialApp(
+      color: Colors.yellow,
+      home: Scaffold(
+        body: content(),
+      ),
+    );
   }
 }

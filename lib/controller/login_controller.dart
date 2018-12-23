@@ -26,7 +26,9 @@ class LoginController {
             .tampilDialog("Success", "Success login..", MainScreen());
       } else {
         // If that response was not OK, throw an error.
-        throw Exception('Failed to load post');
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: ((context) => LoginPage())));
+        // throw Exception('Failed to load post');
       }
     } else {
       DialogWidget(context: context)
@@ -54,10 +56,11 @@ class LoginController {
 
   Future<String> checkToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('token') == null || prefs.getString('idPetshop') == null) {
+    if (prefs.getString('token') == null ||
+        prefs.getString('idPetshop') == null) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: ((context) => LoginPage())));
-    }
+    } else {}
     return prefs.getString('token');
   }
 
@@ -68,6 +71,10 @@ class LoginController {
     };
 
     var response = await dio.get(data1.urlCheckSession);
+    if (response.statusCode != 200) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: ((context) => LoginPage())));
+    }
     Petshop petshop = Petshop.fromSnapshot(response.data);
     prefs.setString("idPetshop", petshop.id);
     prefs.commit();

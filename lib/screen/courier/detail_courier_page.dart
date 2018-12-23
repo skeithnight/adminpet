@@ -31,7 +31,6 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
       });
     } else {
       setState(() {
-        // courier.idPetshop = "5c10af71535a234d990b109f";
         courier.enabled = aa;
       });
     }
@@ -77,7 +76,7 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
                   ),
                 ),
               ),
-              Container(
+              widget.level != 'add'? Container() :Container(
                 padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 30.0),
                 child: TextField(
                   onChanged: (text) {
