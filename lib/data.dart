@@ -1,10 +1,11 @@
 var appName = "Sahi Pet";
+var baseURL = "http://YOUR_IP";
 // Authentication
-var urlRegister = "http://35.231.59.91:8080/petshop/register";
-var urlLogin = "http://35.231.59.91:8080/petshop/login";
-var urlCheckSession = "http://35.231.59.91:8080/petshop/check-session";
+var urlRegister = "$baseURL/petshop/register";
+var urlLogin = "$baseURL/petshop/login";
+var urlCheckSession = "$baseURL/petshop/check-session";
 // Courier
-var urlCourier = "http://35.231.59.91:8080/courier";
+var urlCourier = "$baseURL/courier";
 var pathCourierRegister = "/register";
 var pathCourierPetshop = "/petshop";
 List<String> listEnabled = ["True", "False"];
