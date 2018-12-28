@@ -59,7 +59,8 @@ class _MainScreenState extends State<MainScreen> {
         ],
       );
 
-  Widget content() => new FutureBuilder<Petshop>(
+  Widget content() => 
+  new FutureBuilder<Petshop>(
         future: LoginController(context).checkSession(),
         builder: ((context, snapshot) {
           print(snapshot.data);

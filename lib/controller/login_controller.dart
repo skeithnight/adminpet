@@ -15,20 +15,20 @@ class LoginController {
   Dio dio = new Dio();
   void sendData(Petshop petshop) async {
     if (checkData(petshop)) {
-      var response =
-          await dio.post(data1.urlLogin, data: petshop.toJsonLogin());
-      if (response.statusCode == 200) {
+      try {
+        var response =
+            await dio.post(data1.urlLogin, data: petshop.toJsonLogin());
         // If server returns an OK response, parse the JSON
         SharedPreferences _prefs = await SharedPreferences.getInstance();
         _prefs.setString('token', response.data['token']);
         _prefs.commit();
         DialogWidget(context: context, dismiss: true)
             .tampilDialog("Success", "Success login..", MainScreen());
-      } else {
-        // If that response was not OK, throw an error.
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: ((context) => LoginPage())));
-        // throw Exception('Failed to load post');
+      } on DioError catch (e) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx and is also not 304.
+      DialogWidget(context: context)
+          .tampilDialog("Failed", e.message, () {});
       }
     } else {
       DialogWidget(context: context)
@@ -72,12 +72,13 @@ class LoginController {
     Response response;
     try {
       response = await dio.get(data1.urlCheckSession);
-    } on DioError catch(e) {
+    } on DioError catch (e) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: ((context) => LoginPage())));
-  }
+    }
+    // print(response.data);
     Petshop petshop = Petshop.fromSnapshot(response.data);
     prefs.setString("idPetshop", petshop.id);
     prefs.commit();

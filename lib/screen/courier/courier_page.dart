@@ -5,19 +5,50 @@ import 'package:adminpet/screen/widget/appbar_widget.dart';
 import 'package:adminpet/controller/courier_controller.dart';
 import 'detail_courier_page.dart';
 import 'package:adminpet/model/courier_model.dart';
+import 'monitor_courier_page.dart';
 
 class CourierPage extends StatefulWidget {
   _CourierPageState createState() => _CourierPageState();
 }
 
 class _CourierPageState extends State<CourierPage> {
+  Widget buttonMonitor() => new Container(
+        margin: EdgeInsets.all(10.0),
+        child: Align(
+          alignment: FractionalOffset.topCenter,
+          child: SizedBox(
+              width: double.infinity,
+              height: 50.0,
+              child: new RaisedButton(
+                color: Colors.lightGreen,
+                child: Text(
+                  "Check Location All Courier",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MonitorCourierPage()));
+                },
+              )),
+        ),
+      );
   Widget content() {
     return new FutureBuilder<List<Courier>>(
       future: CourierController(context).getData(),
       builder: (context, snapshot) {
         // print(json.encode(snapshot.data));
         if (snapshot.hasData) {
-          return listData(snapshot.data);
+          return Column(
+            children: <Widget>[
+              Expanded(
+                child: buttonMonitor(),
+              ),
+              Expanded(
+                flex: 8,
+                child: listData(snapshot.data),
+              ),
+            ],
+          );
         } else if (snapshot.hasError) {
           return new Center(child: Text("${snapshot.error}"));
         }
