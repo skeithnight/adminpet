@@ -1,5 +1,5 @@
 var appName = "Sahi Pet";
-var baseURL = "http://35.231.59.91:8080";
+var baseURL = "http://{your-ip}";
 // Authentication
 var urlRegister = "$baseURL/petshop/register";
 var urlLogin = "$baseURL/petshop/login";
