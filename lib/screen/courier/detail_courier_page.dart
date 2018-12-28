@@ -1,5 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
+import 'dart:convert';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'package:adminpet/data.dart' as data1;
 import 'package:adminpet/model/courier_model.dart';
@@ -14,6 +20,9 @@ class DetailCourierPage extends StatefulWidget {
 }
 
 class _DetailCourierPageState extends State<DetailCourierPage> {
+  final WebSocketChannel channel = IOWebSocketChannel.connect(
+      "ws://35.231.59.91:8080/get-ws-courier/5c10af71535a234d990b109f");
+
   Courier courier = new Courier();
   bool aa = true;
   bool isloading = false;
@@ -76,87 +85,94 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
                   ),
                 ),
               ),
-              widget.level != 'add'? Container() :Container(
-                padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 30.0),
-                child: TextField(
-                  onChanged: (text) {
-                    setState(() {
-                      courier.password = text;
-                    });
-                  },
-                  maxLines: 1,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: "Enter your courier password",
-                    labelText: "Password",
-                  ),
-                ),
-              ),
-              // Container(
-              //   padding: EdgeInsets.all(30.0),
-              //   width: double.infinity,
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: <Widget>[
-              //       Text(
-              //         "Enabled",
-              //         style: TextStyle(
-              //           fontSize: 16.0,
-              //           fontWeight: FontWeight.w700,
-              //         ),
-              //       ),
-              //       SizedBox(
-              //         height: 5.0,
-              //       ),
-              //       Wrap(
-              //         alignment: WrapAlignment.spaceBetween,
-              //         children: data1.listEnabled
-              //             .map((pc) => Padding(
-              //                   padding: const EdgeInsets.all(8.0),
-              //                   child: ChoiceChip(
-              //                     selectedColor: Colors.yellow,
-              //                     label: Text(
-              //                       pc,
-              //                       style: TextStyle(
-              //                         fontWeight: FontWeight.bold,
-              //                       ),
-              //                     ),
-              //                     selected:
-              //                         aa == (pc.toLowerCase() == 'true'),
-              //                     onSelected: (selected) {
-              //                       setState(() {
-              //                         aa = selected
-              //                             ? (pc.toLowerCase() == 'true')
-              //                             : false;
-              //                         courier.enabled = aa;
-              //                       });
-              //                     },
-              //                   ),
-              //                 ))
-              //             .toList(),
-              //       ),
-              //     ],
-              //   ),
-              // )
+              widget.level != 'add'
+                  ? Container()
+                  : Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 0.0, horizontal: 30.0),
+                      child: TextField(
+                        onChanged: (text) {
+                          setState(() {
+                            courier.password = text;
+                          });
+                        },
+                        maxLines: 1,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          hintText: "Enter your courier password",
+                          labelText: "Password",
+                        ),
+                      ),
+                    ),
             ],
           ),
         ),
       );
 
-  Widget mapswidget() => Container(
-        padding: EdgeInsets.all(10.0),
-        height: 300.0,
-        width: double.infinity,
-        child: Card(
-          elevation: 2.0,
-          child: MapsWidget(
-            lat: -6.934837,
-            lon: 107.620810,
-            listMarker: null,
-          ),
-        ),
-      );
+  Future<Courier> showMonitoring(snapshot) async {
+    List<dynamic> list = json.decode(snapshot.data);
+    List<Courier> listcourier = new List();
+    Courier icourier = new Courier();
+    for (var item in list) {
+      listcourier.add(Courier.fromSnapshot(item));
+    }
+    for (var item in listcourier) {
+      if (item.id == courier.id) {
+        icourier = item;
+      }
+    }
+    return icourier;
+  }
 
+  Widget mapswidget() => StreamBuilder(
+        stream: channel.stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return new FutureBuilder<Courier>(
+              future: showMonitoring(snapshot),
+              builder: (context, snapshot) {
+                return Container(
+                  padding: EdgeInsets.all(10.0),
+                  height: 300.0,
+                  width: double.infinity,
+                  child: Card(
+                    elevation: 2.0,
+                    child: MapsWidget(
+                      lat: snapshot.data.latitude != null
+                          ? snapshot.data.latitude
+                          : -6.934837,
+                      lon: snapshot.data.longitude != null
+                          ? snapshot.data.longitude
+                          : 107.620810,
+                      listMarker: [
+                        new Marker(
+                          width: 80.0,
+                          height: 80.0,
+                          point: new LatLng(
+                              snapshot.data.latitude != null
+                                  ? snapshot.data.latitude
+                                  : -6.934837,
+                              snapshot.data.longitude != null
+                                  ? snapshot.data.longitude
+                                  : 107.620810),
+                          builder: (ctx) => new Container(
+                                child: Icon(Icons.place),
+                              ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+                // return Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 24.0),
+                //   child: Text(snapshot.hasData ? '${snapshot.data.latitude}' : ''),
+                // );
+              },
+            );
+          }
+          return new Center(child: CircularProgressIndicator());
+        },
+      );
   Widget content() => new Center(
           child: Column(
         children: <Widget>[
@@ -193,6 +209,12 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: widget.level == 'add'
+              ? Text("Add courier")
+              : Text("Detail Courier"),
+          backgroundColor: Colors.lightGreen,
+        ),
         body: Column(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -201,7 +223,6 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
               child: content(),
             ),
             Expanded(
-              flex: 1,
               child: widget.level == "add" ? saveButton() : Container(),
             ),
           ],

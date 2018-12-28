@@ -69,12 +69,15 @@ class LoginController {
     dio.options.headers = {
       "Authorization": "Bearer " + prefs.getString('token') ?? ''
     };
-
-    var response = await dio.get(data1.urlCheckSession);
-    if (response.statusCode != 200) {
+    Response response;
+    try {
+      response = await dio.get(data1.urlCheckSession);
+    } on DioError catch(e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: ((context) => LoginPage())));
-    }
+  }
     Petshop petshop = Petshop.fromSnapshot(response.data);
     prefs.setString("idPetshop", petshop.id);
     prefs.commit();

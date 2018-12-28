@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adminpet/screen/authentication/login_page.dart';
 import 'package:adminpet/data.dart' as data;
 import 'package:adminpet/controller/login_controller.dart';
+import 'order/order_page.dart';
 import 'package:adminpet/screen/courier/courier_page.dart';
 import 'package:adminpet/screen/product/product_page.dart';
 import 'profile/profile_page.dart';
@@ -29,6 +30,13 @@ class _MainScreenState extends State<MainScreen> {
   Widget bottomNavigator() => TabBar(
         labelColor: Colors.black,
         tabs: <Widget>[
+          Tab(
+            icon: new Icon(
+              Icons.shopping_cart,
+              color: Colors.black,
+            ),
+            text: "Order",
+          ),
           Tab(
             icon: new Icon(
               Icons.shopping_basket,
@@ -57,11 +65,12 @@ class _MainScreenState extends State<MainScreen> {
           print(snapshot.data);
           if (snapshot.hasData) {
             return DefaultTabController(
-              length: 3,
+              length: 4,
               child: SafeArea(
                 child: Scaffold(
                   body: TabBarView(
                     children: <Widget>[
+                      new OrderPage(),
                       new ProductPage(),
                       new CourierPage(),
                       new ProfilePage(),
