@@ -14,23 +14,28 @@ class LoginController {
   LoginController(this.context);
   Dio dio = new Dio();
   void sendData(Petshop petshop) async {
-    if (checkData(petshop)) {
-      try {
-        var response =
-            await dio.post(data1.urlLogin, data: petshop.toJsonLogin());
-        // If server returns an OK response, parse the JSON
-        SharedPreferences _prefs = await SharedPreferences.getInstance();
-        _prefs.setString('token', response.data['token']);
-        _prefs.commit();
-        DialogWidget(context: context, dismiss: true)
-            .tampilDialog("Success", "Success login..", MainScreen());
-      } on DioError catch (e) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx and is also not 304.
-      DialogWidget(context: context)
-          .tampilDialog("Failed", e.message, () {});
+    try {
+      if (checkData(petshop)) {
+        try {
+          var response =
+              await dio.post(data1.urlLogin, data: petshop.toJsonLogin());
+          // If server returns an OK response, parse the JSON
+          SharedPreferences _prefs = await SharedPreferences.getInstance();
+          _prefs.setString('token', response.data['token']);
+          _prefs.commit();
+          DialogWidget(context: context, dismiss: true)
+              .tampilDialog("Success", "Success login..", MainScreen());
+        } on DioError catch (e) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx and is also not 304.
+          DialogWidget(context: context)
+              .tampilDialog("Failed", e.message, () {});
+        }
+      } else {
+        DialogWidget(context: context)
+            .tampilDialog("Failed", "The Data cannot empty!", () {});
       }
-    } else {
+    } catch (e) {
       DialogWidget(context: context)
           .tampilDialog("Failed", "The Data cannot empty!", () {});
     }
@@ -56,11 +61,17 @@ class LoginController {
 
   Future<String> checkToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getString('token') == null ||
-        prefs.getString('idPetshop') == null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: ((context) => LoginPage())));
-    } else {}
+    try {
+      checkSession();
+      if (prefs.getString('token') == null ||
+          prefs.getString('idPetshop') == null) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: ((context) => LoginPage())));
+      }
+    } catch (e) {
+      DialogWidget(context: context)
+          .tampilDialog("Failed", "The Data cannot empty!", () {});
+    }
     return prefs.getString('token');
   }
 

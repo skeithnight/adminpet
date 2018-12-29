@@ -63,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
   new FutureBuilder<Petshop>(
         future: LoginController(context).checkSession(),
         builder: ((context, snapshot) {
-          print(snapshot.data);
+          // print(snapshot.data);
           if (snapshot.hasData) {
             return DefaultTabController(
               length: 4,

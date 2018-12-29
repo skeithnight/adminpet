@@ -13,7 +13,7 @@ class Courier {
   Courier();
 
   Courier.fromSnapshot(Map<dynamic, dynamic> snapshot)
-      : this.id = snapshot["id"],
+      : id = snapshot["id"],
         username = snapshot["username"],
         name = snapshot["name"],
         petshop = Petshop.fromSnapshot(snapshot["petshop"]),

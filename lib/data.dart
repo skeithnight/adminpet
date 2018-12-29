@@ -15,3 +15,6 @@ List<String> listEnabled = ["True", "False"];
 var urlGrooming = "$baseURL/grooming";
 var urlClinic = "$baseURL/clinic";
 var urlHotel = "$baseURL/hotel";
+
+// Order
+var urlOrder = "$baseURL/transaction";
