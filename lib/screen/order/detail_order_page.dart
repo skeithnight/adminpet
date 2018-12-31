@@ -40,22 +40,29 @@ class _DetailOrderPageState extends State<DetailOrderPage> {
 
   Widget orderContent() => Container(
         padding: EdgeInsets.all(10.0),
-        height: 300.0,
         width: double.infinity,
         child: Card(
           elevation: 2.0,
           child: Column(
             children: <Widget>[
               ListTile(
-                title: Text(
-                  order.customer.name,
-                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                ),
+                  title: Text(
+                order.customer.name,
+                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              )),
+              ListTile(
+                title: Text("Alamat"),
                 subtitle: Text(order.address),
               ),
               ListTile(
+                title: Text("Note"),
+                subtitle: Text(order.note),
+              ),
+              ListTile(
                 title: Text("Kurir"),
-                subtitle: Text("Belum di jemputr"),
+                subtitle: order.courier == null
+                    ? Text("Belum di jemput")
+                    : Text(order.courier.name),
               ),
               ListTile(
                 title: Text("Pesanan"),
@@ -66,61 +73,14 @@ class _DetailOrderPageState extends State<DetailOrderPage> {
                   ),
                 ),
               ),
-              // Container(
-              //   padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 30.0),
-              //   child: TextField(
-              //     controller: nameEditingController,
-              //     onChanged: (text) {
-              //       setState(() {
-              //         order.customer.name = text;
-              //       });
-              //     },
-              //     maxLines: 1,
-              //     decoration: InputDecoration(
-              //       hintText: "Enter your Order name",
-              //       labelText: "Order Name",
-              //     ),
-              //   ),
-              // ),
-              // Container(
-              //   padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 30.0),
-              //   child: TextField(
-              //     controller: usernameEditingController,
-              //     onChanged: (text) {
-              //       setState(() {
-              //         order.username = text;
-              //       });
-              //     },
-              //     maxLines: 1,
-              //     decoration: InputDecoration(
-              //       hintText: "Enter your Order username",
-              //       labelText: "UserName",
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),
       );
 
-  // Future<Order> showMonitoring(snapshot) async {
-  //   List<dynamic> list = json.decode(order);
-  //   List<Order> listOrder = new List();
-  //   Order iOrder = new Order();
-  //   for (var item in list) {
-  //     listOrder.add(Order.fromSnapshot(item));
-  //   }
-  //   for (var item in listOrder) {
-  //     if (item.id == order.id) {
-  //       iOrder = item;
-  //     }
-  //   }
-  //   return iOrder;
-  // }
-
   Widget mapswidget() => new Container(
         padding: EdgeInsets.all(10.0),
-        height: 300.0,
+        height: 200.0,
         width: double.infinity,
         child: Card(
           elevation: 2.0,
@@ -142,11 +102,56 @@ class _DetailOrderPageState extends State<DetailOrderPage> {
           ),
         ),
       );
+
+  Widget textButon() {
+    if (order.status.toLowerCase() == "sampai-petshop") {
+      return Text(
+        "Proses ",
+        style: TextStyle(color: Colors.white),
+      );
+    } else if (order.status.toLowerCase() == "proses") {
+      return Text(
+        "Service Selesai",
+        style: TextStyle(color: Colors.white),
+      );
+    }
+  }
+
   Widget content() => new Center(
           child: Column(
         children: <Widget>[
-          mapswidget(),
-          orderContent(),
+          Expanded(
+            flex: 12,
+            child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    mapswidget(),
+                    orderContent(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                width: double.infinity,
+                height: 100.0,
+                child: order.status == "sampai-petshop" ||
+                        order.status == "proses"
+                    ? RaisedButton(
+                        onPressed: () =>
+                            OrderController(context).changeStatus(order),
+                        color: Colors.green,
+                        child: textButon(),
+                      )
+                    : null,
+              ),
+            ),
+          )
         ],
       ));
 
@@ -154,15 +159,13 @@ class _DetailOrderPageState extends State<DetailOrderPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: AppBar(
-            title: Text("Detail Order"),
-            backgroundColor: Colors.lightGreen,
-          ),
-          body: SingleChildScrollView(
-            child: content(),
-          )
-          // bottomNavigationBar: widget.level == "add" ? saveButton() : Container(),
-          ),
+        appBar: AppBar(
+          title: Text("Detail Order"),
+          backgroundColor: Colors.lightGreen,
+        ),
+        body: content(),
+        // bottomNavigationBar: widget.level == "add" ? saveButton() : Container(),
+      ),
     );
   }
 }

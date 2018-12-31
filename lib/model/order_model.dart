@@ -21,9 +21,15 @@ class Order {
 
   Order.fromSnapshot(Map<dynamic, dynamic> snapshot)
       : id = snapshot["id"],
-        customer = Customer.fromSnapshot(snapshot["customer"]),
-        petshop = Petshop.fromSnapshot(snapshot["petshop"]),
-        // courier = Courier.fromSnapshot(snapshot["courier"]),
+        customer = snapshot["customer"] == null
+            ? null
+            : Customer.fromSnapshot(snapshot["customer"]),
+        petshop = snapshot["petshop"] == null
+            ? null
+            : Petshop.fromSnapshot(snapshot["petshop"]),
+        courier = snapshot["courier"] == null
+            ? null
+            : Courier.fromSnapshot(snapshot["courier"]),
         address = snapshot["address"],
         latitude = snapshot["latitude"],
         longitude = snapshot["longitude"],
@@ -32,5 +38,19 @@ class Order {
         to = snapshot["to"],
         note = snapshot["note"],
         status = snapshot["status"];
-
+  Map<String, dynamic> toJsonChangeStatus(
+          String idCourier, String statusEdit) =>
+      {
+        "id": id,
+        "customer": {"id": customer.id},
+        "petshop": {"id": petshop.id},
+        "courier": {"id": courier.id},
+        "address": address,
+        "latitude": latitude,
+        "longitude": longitude,
+        "from": from,
+        "to": to,
+        "note": note,
+        "status": statusEdit,
+      };
 }

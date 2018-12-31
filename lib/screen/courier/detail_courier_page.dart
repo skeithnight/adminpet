@@ -108,67 +108,62 @@ class _DetailCourierPageState extends State<DetailCourierPage> {
           ),
         ),
       );
-
-  Future<Courier> showMonitoring(snapshot) async {
-    List<dynamic> list = json.decode(snapshot.data);
-    List<Courier> listcourier = new List();
-    Courier icourier = new Courier();
-    for (var item in list) {
-      listcourier.add(Courier.fromSnapshot(item));
-    }
-    for (var item in listcourier) {
-      if (item.id == courier.id) {
-        icourier = item;
-      }
-    }
-    return icourier;
-  }
-
+  int i = 0;
   Widget mapswidget() => StreamBuilder(
         stream: channel.stream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return new FutureBuilder<Courier>(
-              future: showMonitoring(snapshot),
-              builder: (context, snapshot) {
-                return Container(
-                  padding: EdgeInsets.all(10.0),
-                  height: 300.0,
-                  width: double.infinity,
-                  child: Card(
-                    elevation: 2.0,
-                    child: MapsWidget(
-                      lat: snapshot.data.latitude != null
-                          ? snapshot.data.latitude
-                          : -6.934837,
-                      lon: snapshot.data.longitude != null
-                          ? snapshot.data.longitude
-                          : 107.620810,
-                      listMarker: [
-                        new Marker(
-                          width: 80.0,
-                          height: 80.0,
-                          point: new LatLng(
-                              snapshot.data.latitude != null
-                                  ? snapshot.data.latitude
-                                  : -6.934837,
-                              snapshot.data.longitude != null
-                                  ? snapshot.data.longitude
-                                  : 107.620810),
-                          builder: (ctx) => new Container(
-                                child: Icon(Icons.place),
-                              ),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-                // return Padding(
-                //   padding: const EdgeInsets.symmetric(vertical: 24.0),
-                //   child: Text(snapshot.hasData ? '${snapshot.data.latitude}' : ''),
-                // );
-              },
-            );
+                future: CourierController(context)
+                    .showMonitoring(snapshot, courier.id),
+                builder: (context, snapshot) {
+                  i++;
+                  // return Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  //   child: Text(snapshot.hasData ? '$i : ${snapshot.data.id}' : ''),
+                  // );
+                  return Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.all(10.0),
+                        height: 300.0,
+                        width: double.infinity,
+                        child: Card(
+                          elevation: 2.0,
+                          child: MapsWidget(
+                            lat: snapshot.data.latitude != null
+                                ? snapshot.data.latitude
+                                : -6.934837,
+                            lon: snapshot.data.longitude != null
+                                ? snapshot.data.longitude
+                                : 107.620810,
+                            listMarker: [
+                              new Marker(
+                                width: 80.0,
+                                height: 80.0,
+                                point: new LatLng(
+                                    snapshot.data.latitude != null
+                                        ? snapshot.data.latitude
+                                        : -6.934837,
+                                    snapshot.data.longitude != null
+                                        ? snapshot.data.longitude
+                                        : 107.620810),
+                                builder: (ctx) => new Container(
+                                      child: Icon(Icons.place),
+                                    ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: Card(
+                          child: Text(snapshot.hasData ? '$i : ${snapshot.data.latitude}, ${snapshot.data.longitude}' : ''),
+                        ),
+                      )
+                    ],
+                  );
+                });
           }
           return new Center(child: CircularProgressIndicator());
         },

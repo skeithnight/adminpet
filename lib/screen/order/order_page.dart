@@ -43,7 +43,18 @@ class _OrderPageState extends State<OrderPage> {
                 subtitle: Text(listData[index].address),
                 trailing: listData[index].status == "waiting"
                     ? Icon(Icons.hourglass_empty)
-                    : Icon(Icons.directions_car),
+                    : listData[index].status == "jemput" ||
+                            listData[index].status == "antar"
+                        ? Icon(Icons.directions_car)
+                        : listData[index].status == "sampai-petshop"
+                            ? Icon(Icons.flag)
+                            : listData[index].status == "proses"
+                                ? Icon(Icons.pets)
+                                : listData[index].status == "selesai-petshop"
+                                    ? Icon(Icons.done)
+                                    : listData[index].status == "selesai"
+                                        ? Icon(Icons.done_all)
+                                        : null,
               ),
             ));
   }

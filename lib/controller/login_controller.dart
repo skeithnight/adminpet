@@ -28,15 +28,15 @@ class LoginController {
         } on DioError catch (e) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx and is also not 304.
-          DialogWidget(context: context)
+          DialogWidget(context: context, dismiss: false)
               .tampilDialog("Failed", e.message, () {});
         }
       } else {
-        DialogWidget(context: context)
+        DialogWidget(context: context, dismiss: false)
             .tampilDialog("Failed", "The Data cannot empty!", () {});
       }
     } catch (e) {
-      DialogWidget(context: context)
+      DialogWidget(context: context, dismiss: false)
           .tampilDialog("Failed", "The Data cannot empty!", () {});
     }
   }
@@ -69,7 +69,7 @@ class LoginController {
             context, MaterialPageRoute(builder: ((context) => LoginPage())));
       }
     } catch (e) {
-      DialogWidget(context: context)
+      DialogWidget(context: context, dismiss: false)
           .tampilDialog("Failed", "The Data cannot empty!", () {});
     }
     return prefs.getString('token');
@@ -86,6 +86,7 @@ class LoginController {
     } on DioError catch (e) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.
+      print(e.message);
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: ((context) => LoginPage())));
     }

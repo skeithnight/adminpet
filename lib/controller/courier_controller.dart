@@ -76,4 +76,19 @@ class CourierController {
     }
     return listCourier;
   }
+
+  Future<Courier> showMonitoring(snapshot,idcourier) async {
+    List<dynamic> list = json.decode(snapshot.data);
+    List<Courier> listcourier = new List();
+    Courier icourier = new Courier();
+    for (var item in list) {
+      listcourier.add(Courier.fromSnapshot(item));
+    }
+    for (var item in listcourier) {
+      if (item.id == idcourier) {
+        icourier = item;
+      }
+    }
+    return icourier;
+  }
 }
