@@ -8,6 +8,7 @@ import 'package:adminpet/model/order_model.dart';
 import 'package:adminpet/data.dart' as data1;
 import 'package:adminpet/screen/widget/dialog_widget.dart';
 import 'package:adminpet/main.dart';
+import 'package:adminpet/model/detail_transaksi_model.dart';
 
 class OrderController {
   SharedPreferences prefs;
@@ -26,12 +27,37 @@ class OrderController {
 
     var response = await dio.get('/petshop/${prefs.getString('idPetshop')}');
     List<dynamic> map = response.data;
+    // print(map[0]['groomings']);
     List<Order> listOrder = new List();
+    List<DetailTransaksi> listGroomings = new List();
+    List<DetailTransaksi> listClinics = new List();
+    List<DetailTransaksi> listHotels = new List();
     for (var i = 0; i < map.length; i++) {
-      // print(map[i]);
-      listOrder.add(Order.fromSnapshot(map[i]));
+      if (map[i]['groomings'] != null) {
+        for (var j = 0; j < map[i]['groomings'].length; j++) {
+          listGroomings
+              .add(DetailTransaksi.fromSnapshot(map[i]['groomings'][j]));
+        }
+      } else {
+        listGroomings = null;
+      }
+      if (map[i]['clinics'] != null) {
+        for (var j = 0; j < map[i]['clinics'].length; j++) {
+          listClinics.add(DetailTransaksi.fromSnapshot(map[i]['clinics'][j]));
+        }
+      } else {
+        listClinics = null;
+      }
+      if (map[i]['hotels'] != null) {
+        for (var j = 0; j < map[i]['hotels'].length; j++) {
+          listHotels.add(DetailTransaksi.fromSnapshot(map[i]['hotels'][j]));
+        }
+      } else {
+        listHotels = null;
+      }
+      listOrder.add(
+          Order.fromSnapshot(map[i], listGroomings, listClinics, listHotels));
     }
-    // print(listOrder);
     return listOrder;
   }
 

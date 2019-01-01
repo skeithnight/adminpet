@@ -11,6 +11,7 @@ import 'package:adminpet/data.dart' as data1;
 import 'package:adminpet/model/order_model.dart';
 import 'package:adminpet/controller/order_controller.dart';
 import 'package:adminpet/screen/widget/maps_widget.dart';
+import 'package:adminpet/model/detail_transaksi_model.dart';
 
 class DetailOrderPage extends StatefulWidget {
   String level = "detail";
@@ -64,19 +65,61 @@ class _DetailOrderPageState extends State<DetailOrderPage> {
                     ? Text("Belum di jemput")
                     : Text(order.courier.name),
               ),
+              order.groomings != null
+                  ? showExpansionTile("Pesanan Grooming", order.groomings)
+                  : Container(),
+              order.clinics != null
+                  ? showExpansionTile("Pesanan Klinik", order.clinics)
+                  : Container(),
+              order.hotels != null
+                  ? showExpansionTile("Pesanan Hotel", order.hotels)
+                  : Container(),
               ListTile(
-                title: Text("Pesanan"),
-                subtitle: Card(
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text("Grooming Biasa"),
-                  ),
-                ),
+                title: Text("Total Tagihan"),
+                subtitle: Text("Rp. ${hitungTagihan(order)}"),
               ),
             ],
           ),
         ),
       );
+
+  Widget showExpansionTile(String title, List<DetailTransaksi> listData) {
+    List<Widget> listDataWidget = [];
+    for (var item in listData) {
+      listDataWidget.add(new ListTile(
+        title: Text(item.service.name),
+        subtitle: Text("Jumlah : ${item.jumlah}"),
+        trailing: Text("Rp. ${item.jumlah * item.service.price}"),
+      ));
+    }
+    return ExpansionTile(
+      title: Text(title),
+      children: listDataWidget,
+    );
+  }
+
+  double hitungTagihan(Order order){
+    double totalGrooming = 0;
+    double totalClinic = 0;
+    double totalHotel = 0;
+
+    if(order.groomings != null){
+      for (var item in order.groomings) {
+        totalGrooming = totalGrooming + (item.jumlah * item.service.price);
+      }
+    }
+    if(order.clinics != null){
+      for (var item in order.clinics) {
+        totalClinic = totalClinic + (item.jumlah * item.service.price);
+      }
+    }
+    if(order.hotels != null){
+      for (var item in order.hotels) {
+        totalHotel = totalHotel + (item.jumlah * item.service.price);
+      }
+    }
+    return totalGrooming + totalClinic + totalHotel;
+  }
 
   Widget mapswidget() => new Container(
         padding: EdgeInsets.all(10.0),
@@ -140,15 +183,15 @@ class _DetailOrderPageState extends State<DetailOrderPage> {
                 margin: EdgeInsets.all(10.0),
                 width: double.infinity,
                 height: 100.0,
-                child: order.status == "sampai-petshop" ||
-                        order.status == "proses"
-                    ? RaisedButton(
-                        onPressed: () =>
-                            OrderController(context).changeStatus(order),
-                        color: Colors.green,
-                        child: textButon(),
-                      )
-                    : null,
+                child:
+                    order.status == "sampai-petshop" || order.status == "proses"
+                        ? RaisedButton(
+                            onPressed: () =>
+                                OrderController(context).changeStatus(order),
+                            color: Colors.green,
+                            child: textButon(),
+                          )
+                        : null,
               ),
             ),
           )
