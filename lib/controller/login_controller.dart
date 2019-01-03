@@ -63,8 +63,7 @@ class LoginController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       checkSession();
-      if (prefs.getString('token') == null ||
-          prefs.getString('idPetshop') == null) {
+      if (prefs.getString('token') == null) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: ((context) => LoginPage())));
       }
